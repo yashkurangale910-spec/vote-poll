@@ -39,7 +39,41 @@ document.addEventListener('DOMContentLoaded', () => {
     createSamplePolls();
     renderAllSections();
     updateAllStats();
+    startLiveSimulation();
 });
+
+function startLiveSimulation() {
+    // Simulate someone voting every 15-30 seconds
+    setInterval(() => {
+        if (state.polls.length === 0) return;
+
+        const activePolls = state.polls.filter(p => p.status === 'active');
+        if (activePolls.length === 0) return;
+
+        const randomPoll = activePolls[Math.floor(Math.random() * activePolls.length)];
+        const randomOption = randomPoll.options[Math.floor(Math.random() * randomPoll.options.length)];
+
+        randomOption.votes++;
+        randomPoll.totalVotes++;
+        state.stats.totalVotes++;
+
+        // If we are currently viewing this poll modal, refresh it
+        const modal = document.getElementById('pollModal');
+        if (modal.classList.contains('active')) {
+            const currentTitle = modal.querySelector('.poll-title')?.textContent;
+            if (currentTitle === randomPoll.title) {
+                openPollModal(randomPoll.id);
+            }
+        }
+
+        // Only update if we are on appropriate sections
+        if (state.currentSection === 'home' || state.currentSection === 'browse' || state.currentSection === 'analytics') {
+            renderAllSections();
+        }
+
+        console.log(`Live Update: New vote for "${randomPoll.title}" - ${randomOption.text}`);
+    }, 20000);
+}
 
 function initializeApp() {
     // Check dark mode preference
@@ -123,6 +157,15 @@ function setupEventListeners() {
         q.addEventListener('click', () => {
             const item = q.parentElement;
             item.classList.toggle('active');
+        });
+    });
+
+    // FAQ Search
+    document.getElementById('faqSearch')?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('.faq-item').forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(term) ? 'block' : 'none';
         });
     });
 }
@@ -829,6 +872,37 @@ function renderAnalytics() {
     else if (consensus > 40) consensusDesc = 'Mixed views';
 
     document.getElementById('consensusDesc').textContent = consensusDesc;
+
+    // Sentiment cloud
+    renderSentimentCloud();
+}
+
+function renderSentimentCloud() {
+    const container = document.getElementById('sentimentCloud');
+    if (!container) return;
+
+    // Common civic keywords from polls
+    const keywords = [];
+    state.polls.forEach(poll => {
+        const words = (poll.title + ' ' + (poll.description || '')).toLowerCase()
+            .replace(/[^\w\s]/g, '')
+            .split(/\s+/)
+            .filter(w => w.length > 4);
+        keywords.push(...words);
+    });
+
+    const counts = {};
+    keywords.forEach(w => counts[w] = (counts[w] || 0) + 1);
+
+    const sortedKeywords = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 15);
+
+    container.innerHTML = sortedKeywords.map(([word, count]) => {
+        const size = 0.8 + (count / sortedKeywords[0][1]) * 1.5;
+        const opacity = 0.5 + (count / sortedKeywords[0][1]) * 0.5;
+        return `<span style="font-size: ${size}rem; opacity: ${opacity}; margin: 0.5rem; display: inline-block; cursor: default; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">${word}</span>`;
+    }).join('');
 }
 
 function calculateConsensus() {
@@ -1089,6 +1163,26 @@ function handleNewsletter(e) {
         showToast('🎉 Thanks for subscribing!');
         e.target.reset();
     }
+}
+
+function exportAnalytics() {
+    const data = {
+        timestamp: new Date().toISOString(),
+        totalPolls: state.polls.length,
+        totalVotes: state.stats.totalVotes,
+        polls: state.polls
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `CitizenVoice_Report_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('📈 Report exported successfully!');
 }
 
 // Initialize wizard on load

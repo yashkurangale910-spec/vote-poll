@@ -89,10 +89,13 @@
                 <!-- Trending topics will be rendered here -->
             </div>
 
-            <!-- FAQ Section -->
             <div class="section-header" style="margin-top: 5rem;">
                 <h2 class="section-title">Common Questions</h2>
                 <p class="section-subtitle">Everything you need to know about CitizenVoice</p>
+                <div class="search-box" style="max-width: 500px; margin: 2rem auto;">
+                    <input type="text" class="search-input" id="faqSearch" placeholder="Search for answers...">
+                    <span class="search-icon">🔍</span>
+                </div>
             </div>
             <div class="faq-container">
                 <div class="faq-item">
@@ -278,9 +281,15 @@
 
         <!-- ANALYTICS SECTION -->
         <section class="section" id="analytics">
-            <div class="section-header">
-                <h1 class="page-title">Community Analytics</h1>
-                <p class="page-subtitle">Insights and trends from public opinion</p>
+            <div class="section-header"
+                style="display: flex; justify-content: space-between; align-items: center; text-align: left;">
+                <div>
+                    <h1 class="page-title">Community Analytics</h1>
+                    <p class="page-subtitle">Insights and trends from public opinion</p>
+                </div>
+                <button class="btn btn-outline" onclick="exportAnalytics()">
+                    <span>📥</span> Export Report
+                </button>
             </div>
 
             <div class="analytics-grid">
