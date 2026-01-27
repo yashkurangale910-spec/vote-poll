@@ -114,6 +114,33 @@ function setupEventListeners() {
 
     // Poll type change
     document.getElementById('pollType')?.addEventListener('change', handlePollTypeChange);
+
+    // Scroll handler for Back to Top button
+    window.addEventListener('scroll', handleScroll);
+
+    // FAQ Accordion
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', () => {
+            const item = q.parentElement;
+            item.classList.toggle('active');
+        });
+    });
+}
+
+function handleScroll() {
+    const backToTop = document.getElementById('backToTop');
+    if (window.pageYOffset > 300) {
+        backToTop.classList.add('visible');
+    } else {
+        backToTop.classList.remove('visible');
+    }
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 }
 
 // === Navigation ===
@@ -362,7 +389,21 @@ function getTimeRemaining(endsAt) {
 }
 
 function renderAllPolls() {
-    filterPolls();
+    const container = document.getElementById('allPolls');
+    const skeletonHTML = Array(6).fill(`
+        <div class="skeleton-card">
+            <div class="skeleton-item skeleton-header"></div>
+            <div class="skeleton-item skeleton-title"></div>
+            <div class="skeleton-item skeleton-desc"></div>
+            <div class="skeleton-item skeleton-footer"></div>
+        </div>
+    `).join('');
+
+    container.innerHTML = skeletonHTML;
+
+    setTimeout(() => {
+        filterPolls();
+    }, 800);
 }
 
 function filterPolls() {
@@ -422,6 +463,12 @@ function openPollModal(pollId) {
                 <span>🗳️ ${poll.totalVotes} total votes</span>
             </div>
             <div class="poll-time">${getTimeRemaining(poll.endsAt)}</div>
+        </div>
+
+        <div class="share-actions" style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button class="btn btn-outline" style="flex: 1;" onclick="sharePoll('${poll.id}')">
+                <span>🔗</span> Share Poll
+            </button>
         </div>
     `;
 
@@ -1024,6 +1071,24 @@ function updateAllStats() {
     state.stats.participants = Math.floor(state.stats.totalVotes / 3.2);
 
     saveToLocalStorage();
+}
+
+function sharePoll(pollId) {
+    const url = window.location.origin + window.location.pathname + '?poll=' + pollId;
+    navigator.clipboard.writeText(url).then(() => {
+        showToast('📋 Link copied to clipboard!');
+    }).catch(err => {
+        showToast('❌ Failed to copy link');
+    });
+}
+
+function handleNewsletter(e) {
+    e.preventDefault();
+    const email = e.target.querySelector('input').value;
+    if (email) {
+        showToast('🎉 Thanks for subscribing!');
+        e.target.reset();
+    }
 }
 
 // Initialize wizard on load

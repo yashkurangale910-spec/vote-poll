@@ -88,6 +88,31 @@
             <div class="trending-topics" id="trendingTopics">
                 <!-- Trending topics will be rendered here -->
             </div>
+
+            <!-- FAQ Section -->
+            <div class="section-header" style="margin-top: 5rem;">
+                <h2 class="section-title">Common Questions</h2>
+                <p class="section-subtitle">Everything you need to know about CitizenVoice</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">How does the voting process work? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">Simply browse the available polls, click on one that interests you, and
+                        select your preferred option. Your vote is recorded anonymously and update results in real-time.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Is my identity secret when I vote? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">Yes, CitizenVoice is designed with privacy first. While we track that you
+                        have voted to prevent duplicates, your specific choice is not linked to your personal identity
+                        in public results.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Can I create my own polls? <span class="faq-toggle">+</span></div>
+                    <div class="faq-answer">Absolutely! Head over to the "Create Poll" section. You can choose from
+                        single choice, multiple choice, ratings, or yes/no formats to gather community feedback.</div>
+                </div>
+            </div>
         </section>
 
         <!-- BROWSE POLLS SECTION -->
@@ -395,6 +420,58 @@
 
     </main>
 
+    <!-- Footer Section -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-icon">🗳️</div>
+                    <span class="brand-text">CitizenVoice</span>
+                    <p class="brand-tagline">Empowering community decisions through transparent public opinion polling.
+                    </p>
+                    <div class="newsletter-box">
+                        <p class="newsletter-label">Stay updated with community news</p>
+                        <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+                            <div class="newsletter-input-group">
+                                <input type="email" placeholder="Your email" required class="newsletter-input">
+                                <button type="submit" class="newsletter-btn">Join</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="footer-links-grid">
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Platform</h4>
+                        <a href="#" onclick="switchSection('browse')">Browse Polls</a>
+                        <a href="#" onclick="switchSection('create')">Create Poll</a>
+                        <a href="#" onclick="switchSection('analytics')">Analytics</a>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Support</h4>
+                        <a href="#">Help Center</a>
+                        <a href="#">Community Guidelines</a>
+                        <a href="#">Safety Center</a>
+                    </div>
+                    <div class="footer-links-column">
+                        <h4 class="footer-heading">Company</h4>
+                        <a href="#">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 CitizenVoice. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon">𝕏</a>
+                    <a href="#" class="social-icon">📸</a>
+                    <a href="#" class="social-icon">💼</a>
+                    <a href="#" class="social-icon">🌐</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <!-- Poll Detail Modal -->
     <div class="modal" id="pollModal">
         <div class="modal-overlay" onclick="closePollModal()"></div>
@@ -408,6 +485,11 @@
 
     <!-- Notification Toast -->
     <div class="toast" id="toast"></div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <span class="arrow">↑</span>
+    </button>
 
     <script src="app.js"></script>
 </body>
