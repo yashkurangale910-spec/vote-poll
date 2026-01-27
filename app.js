@@ -348,6 +348,45 @@ function createSamplePolls() {
             allowResultsView: true,
             featured: false,
             creator: 'admin'
+        },
+        {
+            id: 'poll_7',
+            title: 'Expand city-wide Wi-Fi network',
+            description: 'Should the city provide free high-speed Wi-Fi in all public areas and low-income housing?',
+            category: 'infrastructure',
+            type: 'yesno',
+            options: [
+                { id: 'opt_yes', text: 'Yes', votes: 890 },
+                { id: 'opt_no', text: 'No', votes: 120 },
+                { id: 'opt_abstain', text: 'Abstain', votes: 45 }
+            ],
+            createdAt: Date.now() - 10 * 24 * 60 * 60 * 1000,
+            endsAt: Date.now() + 20 * 24 * 60 * 60 * 1000,
+            status: 'active',
+            totalVotes: 1055,
+            allowResultsView: true,
+            featured: true,
+            creator: 'admin'
+        },
+        {
+            id: 'poll_8',
+            title: 'New community library location',
+            description: 'Where should the new community library branch be located?',
+            category: 'education',
+            type: 'single',
+            options: [
+                { id: 'opt_1', text: 'Downtown District', votes: 450 },
+                { id: 'opt_2', text: 'North Suburbs', votes: 320 },
+                { id: 'opt_3', text: 'East Riverside', votes: 210 },
+                { id: 'opt_4', text: 'West Park Area', votes: 540 }
+            ],
+            createdAt: Date.now() - 1 * 24 * 60 * 60 * 1000,
+            endsAt: Date.now() + 14 * 24 * 60 * 60 * 1000,
+            status: 'active',
+            totalVotes: 1520,
+            allowResultsView: true,
+            featured: false,
+            creator: 'admin'
         }
     ];
 
