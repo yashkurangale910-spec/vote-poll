@@ -440,19 +440,31 @@ function createPollCard(poll) {
     const timeRemaining = getTimeRemaining(poll.endsAt);
     const hasVoted = state.userVotes.includes(poll.id);
 
+    // Category icons mapping
+    const categoryIcons = {
+        'infrastructure': '🏗️',
+        'environment': '🌱',
+        'safety': '🛡️',
+        'education': '🎓',
+        'health': '🏥',
+        'recreation': '🎡'
+    };
+
+    const icon = categoryIcons[poll.category] || '📊';
+
     return `
         <div class="poll-card" onclick="openPollModal('${poll.id}')">
             <div class="poll-header">
-                <span class="poll-category">${poll.category}</span>
+                <span class="poll-category">${icon} ${poll.category}</span>
                 <span class="poll-status ${poll.status}">${poll.status}</span>
             </div>
             <h3 class="poll-title">${poll.title}</h3>
             <p class="poll-description">${poll.description}</p>
             <div class="poll-stats">
                 <div class="poll-votes">
-                    <span>🗳️</span>
-                    <span>${poll.totalVotes} votes</span>
-                    ${hasVoted ? '<span style="color: var(--success)">✓ Voted</span>' : ''}
+                    <span class="vote-icon">🏁</span>
+                    <span class="vote-count">${poll.totalVotes.toLocaleString()} votes</span>
+                    ${hasVoted ? '<span class="voted-badge">✓ Voted</span>' : ''}
                 </div>
                 <div class="poll-time">${timeRemaining}</div>
             </div>
@@ -551,14 +563,39 @@ function openPollModal(pollId) {
             <div class="poll-time">${getTimeRemaining(poll.endsAt)}</div>
         </div>
 
-        <div class="share-actions" style="margin-top: 2rem; display: flex; gap: 1rem;">
-            <button class="btn btn-outline" style="flex: 1;" onclick="sharePoll('${poll.id}')">
-                <span>🔗</span> Share Poll
-            </button>
+        <div class="share-actions" style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-outline" style="flex: 1;" onclick="sharePoll('${poll.id}')">
+                    <span>🔗</span> Copy Link
+                </button>
+                <button class="btn btn-outline" style="flex: 1; border-color: #1DA1F2; color: #1DA1F2;" onclick="socialShare('${poll.id}', 'twitter')">
+                    <span>𝕏</span> Twitter
+                </button>
+                <button class="btn btn-outline" style="flex: 1; border-color: #25D366; color: #25D366;" onclick="socialShare('${poll.id}', 'whatsapp')">
+                    <span>📱</span> WhatsApp
+                </button>
+            </div>
         </div>
     `;
 
     modal.classList.add('active');
+}
+
+function socialShare(pollId, platform) {
+    const poll = state.polls.find(p => p.id === pollId);
+    if (!poll) return;
+
+    const url = encodeURIComponent(window.location.origin + window.location.pathname + '?poll=' + pollId);
+    const text = encodeURIComponent(`I just voted on: "${poll.title}" at CitizenVoice! Join the community decision here:`);
+
+    let shareUrl = '';
+    if (platform === 'twitter') {
+        shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+    } else if (platform === 'whatsapp') {
+        shareUrl = `https://api.whatsapp.com/send?text=${text}%20${url}`;
+    }
+
+    if (shareUrl) window.open(shareUrl, '_blank');
 }
 
 function closePollModal() {
