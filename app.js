@@ -187,6 +187,10 @@ function scrollToTop() {
 }
 
 // === Navigation ===
+/**
+ * Switches the active section of the application.
+ * @param {string} sectionId - The ID of the section to display.
+ */
 function switchSection(sectionId) {
     // Update active section
     document.querySelectorAll('.section').forEach(section => {
